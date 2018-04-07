@@ -36,7 +36,7 @@ class AESCipher(object):
         return self._unpad(cipher.decrypt(enc[AES.block_size:])).decode('utf-8')
 
 def send_post_request(data):
-    r = requests.post('http://127.0.0.1:8001', data)
+    r = requests.post('http://127.0.0.1:8002', data)
     print(r.text)
 
 
@@ -60,10 +60,10 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         body = self.rfile.read(content_length)
-        new_cipher3 = AESCipher(key='mykey3')
-        decrypted3 = new_cipher3.decrypt(body)
-        print("Decryption Layer 3: ", decrypted3, '\n')
-        message = bytes(decrypted3, 'utf-8')
+        new_cipher2 = AESCipher(key='mykey2')
+        decrypted2 = new_cipher2.decrypt(body)
+        print(" Decryption Layer 2: ", decrypted2, '\n')
+        message = bytes(decrypted2, 'utf-8')
         self.send_response(200)
         self.end_headers()
         response = BytesIO()
@@ -78,7 +78,7 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
 def run():
     print('starting server...')
-    server_address = ('localhost', 8000)
+    server_address = ('localhost', 8001)
     httpd = HTTPServer(server_address, testHTTPServer_RequestHandler)
     print('running server...')
     httpd.serve_forever()
