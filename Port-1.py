@@ -35,44 +35,57 @@ class AESCipher(object):
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
         return self._unpad(cipher.decrypt(enc[AES.block_size:])).decode('utf-8')
 
+Origin = 'Client'
+Destination = 'http://127.0.0.1:8001'
+
 def send_post_request(data):
-    r = requests.post('http://127.0.0.1:8001', data)
+    
+    r = requests.post(Destination, data)
     print(r.text)
+    
+
+HTTP = 'http://127.0.0.1:8000'
 
 
 class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
     #GET
-    def do_GET(self):
+#    def do_GET(self):
         # Send response
-        self.send_response(200)
-        
-        self.send_header('Context-type','text/html')
-        self.end_headers()
+#        self.send_response(200)      
+       # self.send_header('Context-type','text/html')
+#        self.end_headers()
+#        self.wfile.write(b'Hi')
 
 
         # Send message back
-        message = "Hello"
+       # message = "Hello"
 
-        self.wfile.write(bytes(message.encode()))
-        return
+       # self.wfile.write(bytes(message.encode()))
+#        return
 
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         body = self.rfile.read(content_length)
         new_cipher3 = AESCipher(key='mykey3')
         decrypted3 = new_cipher3.decrypt(body)
+        print('Receiving from: ', Origin, '\n')
         print("Decryption Layer 3: ", decrypted3, '\n')
+        print('Sending to: ', Destination, '\n')
         message = bytes(decrypted3, 'utf-8')
         self.send_response(200)
+        self.send_header('Context-type','text/html')
         self.end_headers()
         response = BytesIO()
-        response.write(b'This is POST request. ')
-        response.write(b'Received: ')
+        response.write(b'This is POST request. \n')
+        response.write(b'Received from: ')
+        PORT = bytes(HTTP, 'utf-8')
+        response.write(PORT)
+        response.write(b'\nMessage: ')
         response.write(message)
      #   response.write(decrypted)
         self.wfile.write(response.getvalue())
-        send_post_request(message)
+    #    send_post_request(message)
 
 
 
@@ -82,6 +95,7 @@ def run():
     httpd = HTTPServer(server_address, testHTTPServer_RequestHandler)
     print('running server...')
     httpd.serve_forever()
+    
 
 
    

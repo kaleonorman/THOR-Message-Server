@@ -35,10 +35,13 @@ import requests
 #        cipher = AES.new(self.key, AES.MODE_CBC, iv)
 #        return self._unpad(cipher.decrypt(enc[AES.block_size:])).decode('utf-8')
 
+Origin = 'http://127.0.0.1:8002'
+
 def get_request(data):
     r = requests.get('http://127.0.0.1:8003', data)
     print(r.text)
 
+HTTP = 'http://127.0.0.1:8003'
 
 class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
@@ -62,13 +65,17 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
         body = self.rfile.read(content_length)
         #new_cipher = AESCipher(key='mykey')
         #decrypted = new_cipher.decrypt(body)
-        print(bytes.decode(body))
+        print('Receiving from: ', Origin, '\n')
+        print('Message: ', bytes.decode(body), '\n')
         #message = bytes(body, 'utf-8')
         self.send_response(200)
         self.end_headers()
         response = BytesIO()
-        response.write(b'This is POST request. ')
-        response.write(b'Received: ')
+        response.write(b'This is POST request. \n')
+        response.write(b'Received from: ')
+        PORT = bytes(HTTP, 'utf-8')
+        response.write(PORT)
+        response.write(b'\nMessage: ')
         response.write(body)
      #   response.write(decrypted)
         self.wfile.write(response.getvalue())

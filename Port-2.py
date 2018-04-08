@@ -35,10 +35,14 @@ class AESCipher(object):
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
         return self._unpad(cipher.decrypt(enc[AES.block_size:])).decode('utf-8')
 
+Origin = 'http://127.0.0.1:8000'
+Destination = 'http://127.0.0.1:8002'
+
 def send_post_request(data):
-    r = requests.post('http://127.0.0.1:8002', data)
+    r = requests.post(Destination, data)
     print(r.text)
 
+HTTP = 'http://127.0.0.1:8001'
 
 class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
@@ -62,13 +66,18 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
         body = self.rfile.read(content_length)
         new_cipher2 = AESCipher(key='mykey2')
         decrypted2 = new_cipher2.decrypt(body)
-        print(" Decryption Layer 2: ", decrypted2, '\n')
+        print('Receiving from: ', Origin, '\n')
+        print("Decryption Layer 2: ", decrypted2, '\n')
+        print('Sending to: ', Destination, '\n')
         message = bytes(decrypted2, 'utf-8')
         self.send_response(200)
         self.end_headers()
         response = BytesIO()
-        response.write(b'This is POST request. ')
-        response.write(b'Received: ')
+        response.write(b'This is POST request. \n')
+        response.write(b'Received from: ')
+        PORT = bytes(HTTP, 'utf-8')
+        response.write(PORT)
+        response.write(b'\nMessage: ')
         response.write(message)
      #   response.write(decrypted)
         self.wfile.write(response.getvalue())
