@@ -38,10 +38,10 @@ import requests
 Origin = 'http://127.0.0.1:8002'
 
 def get_request(data):
-    r = requests.get('http://127.0.0.1:8003', data)
+    r = requests.get('http://127.0.0.1:8001', data)
     print(r.text)
 
-HTTP = 'http://127.0.0.1:8003'
+HTTP = 'http://127.0.0.1:8001'
 
 class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
@@ -84,7 +84,7 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
 def run():
     print('starting server...')
-    server_address = ('localhost', 8003)
+    server_address = ('localhost', 8001)
     httpd = HTTPServer(server_address, testHTTPServer_RequestHandler)
     print('running server...')
     httpd.serve_forever()
