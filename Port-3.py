@@ -35,14 +35,23 @@ class AESCipher(object):
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
         return self._unpad(cipher.decrypt(enc[AES.block_size:])).decode('utf-8')
 
-Origin = 'http://127.0.0.1:8003'
+Ports_file = open('IP.txt', 'r')
+IP = Ports_file.read()
+print(IP[7:11])
+
+
+Port2 = int(IP[7:11])
+print(Port2)
+
+Origin = 'http://127.0.0.1:' + str(IP[1:4])
+HTTP = 'http://127.0.0.1:' + str(Port2)
 Destination = 'http://127.0.0.1:'
 
 def send_post_request(Destination, data):
     r = requests.post(Destination, data)
     print(r.text)
 
-HTTP = 'http://127.0.0.1:8002'
+
 
 class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
@@ -91,7 +100,7 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
 def run():
     print('starting server...')
-    server_address = ('localhost', 8002)
+    server_address = ('localhost', Port2)
     httpd = HTTPServer(server_address, testHTTPServer_RequestHandler)
     print('running server...')
     httpd.serve_forever()

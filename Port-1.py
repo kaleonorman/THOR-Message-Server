@@ -35,6 +35,8 @@ class AESCipher(object):
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
         return self._unpad(cipher.decrypt(enc[AES.block_size:])).decode('utf-8')
 
+#path = '/../THOR-Message-Client/'
+
 Origin = 'Client'
 Destination = 'http://127.0.0.1:'
 
@@ -104,5 +106,3 @@ def run():
    
 if __name__ == '__main__':
     run()
-   
-   

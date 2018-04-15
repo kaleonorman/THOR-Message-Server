@@ -7,6 +7,7 @@ from Crypto import Random
 from Crypto.Cipher import AES
 
 import requests
+import random
 
 #class AESCipher(object):
 #    """
@@ -35,13 +36,24 @@ import requests
 #        cipher = AES.new(self.key, AES.MODE_CBC, iv)
 #        return self._unpad(cipher.decrypt(enc[AES.block_size:])).decode('utf-8')
 
-Origin = 'http://127.0.0.1:8002'
+IP = [8001, 8002, 8003]
+random.shuffle(IP)
+
+f = open('IP.txt','w')
+f.truncate()
+f.write(str(IP))
+f.close()
+
+Port1 = IP[0]
+
+Origin = 'http://127.0.0.1:' + str(IP[1])
+HTTP = 'http://127.0.0.1:'+ str(Port1)
+
 
 def get_request(data):
-    r = requests.get('http://127.0.0.1:8001', data)
+    r = requests.get(HTTP, data)
     print(r.text)
 
-HTTP = 'http://127.0.0.1:8001'
 
 class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
@@ -84,7 +96,7 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
 def run():
     print('starting server...')
-    server_address = ('localhost', 8001)
+    server_address = ('localhost', Port1)
     httpd = HTTPServer(server_address, testHTTPServer_RequestHandler)
     print('running server...')
     httpd.serve_forever()
